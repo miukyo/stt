@@ -11,7 +11,7 @@
 
 ## Quick start:
 1. Download the STT from [here](https://github.com/miukyo/stt/releases/)
-2. Install ffmpeg (required)
+2. Install [ffmpeg](https://www.ffmpeg.org/download.html) (required)
 4. Run `stt.exe`
    
 <p align="center">
