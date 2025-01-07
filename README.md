@@ -1,10 +1,15 @@
-<center>
-![Screenshot 2025-01-07 215313](https://github.com/user-attachments/assets/99968b8a-18e2-4ca0-b8e5-34e49d57093d)
-# STT (Speech-to-Text Transcriber Tool)
-</center>
-STT is a tool that converts speech in audio files into text. It utilizes whisper.cpp for transcription and ffmpeg for processing various audio/video formats, making it easy to transcribe spoken content into written text.
+<p align="center">
+  <a href="https://github.com/miukyo/stt">
+    <img src="https://github.com/user-attachments/assets/99968b8a-18e2-4ca0-b8e5-34e49d57093d" alt="Logo" width="200" height="200">
+  </a>
 
-#### Quick start:
+  <h1 align="center">STT (Speech-to-Text Transcriber Tool)</h3>
+
+  <p align="center">
+    STT is a tool that converts speech in audio files into text. It utilizes whisper.cpp for transcription and ffmpeg for processing various audio/video formats, making it easy to transcribe spoken content into written text.
+</p>
+
+## Quick start:
 1. Download the STT from [here](https://github.com/miukyo/stt/releases/tag/v1.0.0)
 2. Install ffmpeg (required)
 4. Run `stt.exe`
