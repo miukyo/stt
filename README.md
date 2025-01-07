@@ -13,6 +13,10 @@
 1. Download the STT from [here](https://github.com/miukyo/stt/releases/)
 2. Install ffmpeg (required)
 4. Run `stt.exe`
+   
+<p align="center">
+<img src="https://github.com/user-attachments/assets/4acdbae8-d081-41cf-84e3-391219dd0c2d" alt="preview">
+</p>
 
 ## Development
 Follow these steps to set up STT on your local machine:
