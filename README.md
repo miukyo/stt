@@ -36,7 +36,7 @@ Use pip to install required Python packages:
 for running the program
 
 ```
-pip install qtwebview
+pip install pywebview
 ```
 
 for bundling the program into executable
