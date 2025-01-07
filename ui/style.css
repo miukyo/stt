@@ -1,0 +1,179 @@
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+    Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: white;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+p {
+  font-size: 14px;
+}
+
+.bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  object-fit: contain;
+  z-index: -1;
+}
+
+.title-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  margin-top: 1rem;
+}
+
+.btn {
+  background-color: #dfeeff;
+  border: none;
+  color: black;
+  padding: 10px 20px;
+  text-align: center;
+  line-height: 1.2;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 1rem;
+  transition-duration: 100ms;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:hover,
+.btn:active {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btnlist {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btnlist input[type="radio"]:checked + label {
+  background-color: #007bff;
+  color: white;
+}
+
+.btnlist input[type="radio"],
+.btnlist input[type="file"] {
+  z-index: 10;
+  visibility: hidden;
+  position: absolute;
+}
+
+#audio audio {
+  border-radius: 1rem;
+  display: block;
+}
+
+#output {
+  margin-top: 20px;
+  width: 100%;
+  border-radius: 1rem;
+  display: block;
+  outline: none;
+  border: none;
+  background-color: black;
+  resize: none;
+  color: white;
+  padding: 8px;
+  font-family: monospace;
+  color: #dfeeff;
+  white-space: pre-wrap;
+}
+
+.audiolist {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(200px, 1fr));
+  gap: 0.5rem;
+  margin-block: 0.5rem;
+}
+
+.audiolist p {
+  background-color: #dfeeff;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 1rem;
+  width: 100%;
+  height: 100%;
+  min-height: 70px;
+  padding-left: 60px;
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  place-content: center;
+}
+
+.audiolist p button {
+  background-color: #007bff;
+  color: white;
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 50px;
+  display: grid;
+  place-content: center;
+}
+
+.audiolist p span {
+  background-color: rgba(72, 255, 0, 0.5);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  mix-blend-mode: multiply;
+  height: 100%;
+  display: grid;
+  transition: width 1s ease;
+}
+
+.audiolist audio {
+  background-color: #dfeeff;
+  padding: 10px;
+  border-radius: 1rem;
+  width: 100%;
+  height: 100%;
+}
+
+.select {
+  appearance: none;
+}
+
+.select option {
+  direction: rtl;
+}
+
+input[type="radio"]:focus + label {
+  border: 2px solid black;
+}
+
+.start {
+  margin-top: 1rem;
+  width: 100%;
+  height: 50px;
+}

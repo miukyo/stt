@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="icon.ico" />
+  <title>STT</title>
+</head>
+
+<body>
+  <img class="bg" src="bg.avif" alt="background" />
+  <div class="title-container">
+    <h1 class="title">STT</h1>
+    <p>Speech to text transcription tool</p>
+    <p>Made by <a target="_blank" href="https://github.com/miukyo">miukyo</a></p>
+  </div>
+
+  <div class="container">
+    <h2>Models</h2>
+    <p>
+      <!-- Load a ggml model file (you can obtain one from
+        <a target="_blank" href="https://huggingface.co/ggerganov/whisper.cpp/tree/main">here</a>) -->
+      <!-- <br /> -->
+      Note that the bigger the model, the longer it takes to transcribe.
+    </p>
+    <div id="models" class="btnlist" onchange="setModel(event)" style="margin-top: 0.5rem">
+      <!-- <button class="btn" >Custom</button> -->
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>Language</h2>
+    <p>
+      Set the language of the transcription. If set to "Auto", the language will be detected automatically.
+    </p>
+    <select id="language" class="btn select" style="margin-top: 0.5rem" onchange="setLanguage(event)">
+      <option value="auto">Auto</option>
+    </select>
+    </p>
+  </div>
+
+  <div class="container">
+    <h2>Audio/Video File</h2>
+    <p></p>
+    <button onclick="openAudioFile()" class="btn" style="margin-top: 0.5rem">
+      Browse
+    </button>
+    <div id="audiolist" class="audiolist"></div>
+  </div>
+
+  <div class="container">
+    <h2>Output</h2>
+    <div class="btnlist" style="margin-top: 0.5rem" onchange="setOutputFormat(event)">
+      <p>Output format:</p>
+      <input type="radio" id="text" name="type" value="txt" checked />
+      <label class="btn" for="text" tabindex="0">Text (Default)</label>
+      <input type="radio" id="srt" name="type" value="srt" />
+      <label class="btn" for="srt" tabindex="0">SRT</label>
+      <input type="radio" id="vtt" name="type" value="vtt" />
+      <label class="btn" for="vtt" tabindex="0">VTT</label>
+      <input type="radio" id="lrc" name="type" value="lrc" />
+      <label class="btn" for="lrc" tabindex="0">LRC</label>
+    </div>
+    <div class="btnlist" style="margin-top: 0.5rem">
+      <p>Output result to:</p>
+      <pre class="btn" style="pointer-events: none; display: none" id="output-path"></pre>
+      <button class="btn" onclick="setOutputFolder()">Change</button>
+    </div>
+
+    <button id="run_sub" class="btn start" onclick="run_sub(event)" disabled>Transcribe</button>
+
+    <textarea readonly id="output" rows="10" cols="50"></textarea>
+  </div>
+</body>
+<script>
+  window.onload = function () {
+    setTimeout(() => {
+      window.pywebview.api.reset_audio_list(); // reset list upon page load when debugging (timeout is needed)
+    }, 500);
+  };
+
+  document.querySelectorAll("label").forEach((label) => {
+    label.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault(); // Prevent default scrolling behavior for Spacebar
+        const targetId = label.getAttribute("for"); // Get the associated input's id
+        const input = document.getElementById(targetId);
+        if (input) input.checked = true; // Select the radio button
+      }
+    });
+  });
+
+  const models = ["tiny", "tiny.en", "tiny-q5_1", "tiny.en-q5_1", "tiny-q8_0",
+    "base", "base.en", "base-q5_1", "base.en-q5_1", "base-q8_0",
+    "small", "small.en", "small.en-tdrz", "small-q5_1", "small.en-q5_1", "small-q8_0",
+    "medium", "medium.en", "medium-q5_0", "medium.en-q5_0", "medium-q8_0",
+    "large-v1", "large-v2", "large-v2-q5_0", "large-v2-q8_0", "large-v3",
+    "large-v3-q5_0", "large-v3-turbo", "large-v3-turbo-q5_0", "large-v3-turbo-q8_0"]
+  const languages = {
+    en: "english",
+    zh: "chinese",
+    de: "german",
+    es: "spanish",
+    ru: "russian",
+    ko: "korean",
+    fr: "french",
+    ja: "japanese",
+    pt: "portuguese",
+    tr: "turkish",
+    pl: "polish",
+    ca: "catalan",
+    nl: "dutch",
+    ar: "arabic",
+    sv: "swedish",
+    it: "italian",
+    id: "indonesian",
+    hi: "hindi",
+    fi: "finnish",
+    vi: "vietnamese",
+    he: "hebrew",
+    uk: "ukrainian",
+    el: "greek",
+    ms: "malay",
+    cs: "czech",
+    ro: "romanian",
+    da: "danish",
+    hu: "hungarian",
+    ta: "tamil",
+    no: "norwegian",
+    th: "thai",
+    ur: "urdu",
+    hr: "croatian",
+    bg: "bulgarian",
+    lt: "lithuanian",
+    la: "latin",
+    mi: "maori",
+    ml: "malayalam",
+    cy: "welsh",
+    sk: "slovak",
+    te: "telugu",
+    fa: "persian",
+    lv: "latvian",
+    bn: "bengali",
+    sr: "serbian",
+    az: "azerbaijani",
+    sl: "slovenian",
+    kn: "kannada",
+    et: "estonian",
+    mk: "macedonian",
+    br: "breton",
+    eu: "basque",
+    is: "icelandic",
+    hy: "armenian",
+    ne: "nepali",
+    mn: "mongolian",
+    bs: "bosnian",
+    kk: "kazakh",
+    sq: "albanian",
+    sw: "swahili",
+    gl: "galician",
+    mr: "marathi",
+    pa: "punjabi",
+    si: "sinhala",
+    km: "khmer",
+    sn: "shona",
+    yo: "yoruba",
+    so: "somali",
+    af: "afrikaans",
+    oc: "occitan",
+    ka: "georgian",
+    be: "belarusian",
+    tg: "tajik",
+    sd: "sindhi",
+    gu: "gujarati",
+    am: "amharic",
+    yi: "yiddish",
+    lo: "lao",
+    uz: "uzbek",
+    fo: "faroese",
+    ht: "haitian creole",
+    ps: "pashto",
+    tk: "turkmen",
+    nn: "nynorsk",
+    mt: "maltese",
+    sa: "sanskrit",
+    lb: "luxembourgish",
+    my: "myanmar",
+    bo: "tibetan",
+    tl: "tagalog",
+    mg: "malagasy",
+    as: "assamese",
+    tt: "tatar",
+    haw: "hawaiian",
+    ln: "lingala",
+    ha: "hausa",
+    ba: "bashkir",
+    jw: "javanese",
+    su: "sundanese",
+    yue: "cantonese",
+  };
+
+  function run_sub() {
+    const output = document.getElementById("output");
+    output.innerHTML = "";
+    window.pywebview.api.run_sub();
+  }
+  function stop_sub() {
+    window.pywebview.api.stop_sub();
+  }
+
+  function changeState(state) {
+    const button = document.getElementById("run_sub");
+    if (state === "run") {
+      button.innerText = "Stop";
+      button.onclick = stop_sub;
+    } else {
+      button.innerText = "Transcribe";
+      button.onclick = run_sub;
+    }
+  }
+
+  const audioList = document.getElementById("audiolist");
+
+  function setAudioList(list) {
+    audioList.innerHTML = "";
+    if (list.length > 0) {
+      document.getElementById("run_sub").disabled = false;
+    } else {
+      document.getElementById("run_sub").disabled = true;
+    }
+    list.forEach(async (file, i) => {
+      const name = document.createElement("p");
+      const audio = document.createElement("audio");
+      const trashicon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2m-6 5v6m4-6v6"/></svg>`;
+      name.innerHTML =
+        `<span id="audio${i}"></span><button class='btn' onclick="deleteAudio(${i})">${trashicon}</button>` +
+        file.name;
+      audio.src = file.url;
+      audio.controls = true;
+
+      audioList.appendChild(name);
+      audioList.appendChild(audio);
+    });
+  }
+  function deleteAudio(i) {
+    window.pywebview.api.remove_audio(i).then((result) => {
+      setAudioList(result);
+    });
+  }
+  function openAudioFile() {
+    window.pywebview.api.open_audio_file().then((result) => {
+      setAudioList(result);
+    });
+  }
+
+  for (const [key, value] of Object.entries(languages)) {
+    const option = document.createElement("option");
+    option.value = key;
+    option.innerHTML = value.charAt(0).toUpperCase() + value.slice(1);
+    document.getElementById("language").appendChild(option);
+  }
+
+  let wrapper = document.getElementById("models");
+  for (const model of models) {
+    
+    const inner = `
+      <input type="radio" id="${model}" name="model" value="${model}" />
+      <label class="btn" for="${model}" tabindex="0">${model}</label>`
+    wrapper.innerHTML += inner;
+  }
+  const custom = `
+      <input type="radio" id="custom" name="model" value="custom" />
+      <label id="custommodel" class="btn" for="custom" tabindex="0">Custom</label>
+    `
+  wrapper.innerHTML += custom;
+
+  function setModel(model) {
+    window.pywebview.api.set_model(model.target.value);
+  }
+
+  function setLanguage(language) {
+    window.pywebview.api.set_language(language.target.value);
+  }
+
+  function setOutputFormat(format) {
+    window.pywebview.api.set_output_format(format.target.value);
+  }
+
+  function setOutputFolder() {
+    window.pywebview.api.set_output_folder().then((result) => {
+      const output = document.getElementById("output-path");
+      output.innerHTML = result;
+      output.style.display = "block";
+    });
+  }
+</script>
+
+</html>

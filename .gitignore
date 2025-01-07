@@ -1,0 +1,6 @@
+dist
+build
+.vscode
+lib/models
+__pycache__
+stt.exe
