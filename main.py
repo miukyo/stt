@@ -218,11 +218,6 @@ class App:
                 self.log(f"Command failed with return code {self.whisper.returncode}")
                 break
 
-        # window.evaluate_js(
-        #     f"document.getElementById('run_sub').disabled = false;document.getElementById('run_sub').innerText = 'Transcribe'"
-        # )
-        # self.log(f"Finished transcription of {len(self.audio_list)} files\n")
-
 
 webview.create_window(
     "STT", "ui/index.html", js_api=App(), min_size=(800, 600), width=800, height=600
