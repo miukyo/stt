@@ -24,7 +24,7 @@ Follow these steps to set up STT on your local machine:
 
 Clone the project to your local machine:
 ```
-git clone https://github.com/yourusername/stt.git
+git clone https://github.com/miukyo/stt.git
 cd stt
 ```
 #### 2. Install Dependencies
