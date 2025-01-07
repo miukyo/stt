@@ -10,7 +10,7 @@
 </p>
 
 ## Quick start:
-1. Download the STT from [here](https://github.com/miukyo/stt/releases/tag/v1.0.0)
+1. Download the STT from [here](https://github.com/miukyo/stt/releases/)
 2. Install ffmpeg (required)
 4. Run `stt.exe`
 
